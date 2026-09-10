@@ -22,7 +22,7 @@ Open two browsers → Create → share ONE invite link with peer.
 docker compose up --build
 ```
 
-Serve frontend over HTTPS, backend over WSS. Set `ALLOWED_ORIGINS` to exact origins. Disable proxy access logs for `/ws` and `/v1/*` bodies; `access_log off` for these paths (see SECURITY.md).
+Serve frontend over HTTPS, backend over WSS. The relay is open-access by design (no accounts, no origin allowlist — anyone with the URL can pair). Disable proxy access logs for `/ws` bodies; `access_log off` for these paths (see SECURITY.md).
 
 ## Architecture
 

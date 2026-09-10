@@ -4,7 +4,6 @@ services:
     ports: ["8080:8080"]
     environment:
       PORT: 8080
-      ALLOWED_ORIGINS: https://example.com
     restart: unless-stopped
     logging:
       driver: json-file

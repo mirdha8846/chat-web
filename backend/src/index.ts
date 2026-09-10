@@ -7,13 +7,12 @@ import { Bucket } from './rateLimit.js';
 import { log } from './logger.js';
 
 const PORT = Number(process.env.PORT ?? 8080);
-const ORIGINS = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:5173').split(',');
 const ID_RE = /^[A-Za-z0-9\-_]{16,128}$/;
 const B64 = /^[A-Za-z0-9\-_+/=]{8,12000}$/;
 
 const app = express();
 app.disable('x-powered-by');
-app.use(cors({ origin: ORIGINS, maxAge: 600 }));
+app.use(cors());
 app.use(express.json({ limit: '16kb' }));
 app.use((_req, res, next) => {
   res.setHeader('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");
@@ -56,9 +55,7 @@ function relay(from: Peer, payload: object): void {
   if (p && p.ws.readyState === WebSocket.OPEN) p.ws.send(JSON.stringify(payload));
 }
 
-wss.on('connection', (ws: WebSocket, req) => {
-  const origin = req.headers.origin ?? '';
-  if (origin && !ORIGINS.includes(origin)) { ws.close(4403, 'origin'); return; }
+wss.on('connection', (ws: WebSocket) => {
   log('WEBSOCKET_CONNECTED');
   const peer: Peer = { ws, idx: 0, seq: 0, bucket: new Bucket(), seen: new Set(), alive: true, partner: null, room: '' };
   if (waiting && waiting.ws.readyState === WebSocket.OPEN) {
