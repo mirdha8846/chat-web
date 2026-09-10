@@ -7,7 +7,7 @@ type Status = 'connecting' | 'waiting' | 'secure' | 'reconnecting';
 type CallState = 'idle' | 'outgoing' | 'incoming' | 'active';
 type CallMode = 'video' | 'voice';
 
-const WS_URL = import.meta.env.VITE_WS_URL ?? 'ws://localhost:8080/ws';
+const WS_URL = import.meta.env.VITE_WS_URL ?? 'wss://chat-web-b0xf.onrender.com/ws';
 const ICE_SERVERS: RTCIceServer[] = [{ urls: 'stun:stun.l.google.com:19302' }];
 
 export default function App(): JSX.Element {
