@@ -1,0 +1,15 @@
+services:
+  backend:
+    build: ./backend
+    ports: ["8080:8080"]
+    environment:
+      PORT: 8080
+      ALLOWED_ORIGINS: https://example.com
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }
+  frontend:
+    build: ./frontend
+    ports: ["5173:80"]
+    depends_on: [backend]
