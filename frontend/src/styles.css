@@ -62,6 +62,12 @@ body{margin:0;background:var(--bg);color:var(--ink);
 .roundbtn.end{background:var(--red)}
 .roundbtn.sm{width:30px;height:30px;font-size:13px;margin-left:auto}
 .modalbtns{display:flex;gap:10px;margin-top:14px;justify-content:center}
+.accept{background:var(--green);color:#fff;border:0;font-weight:800;font-size:15px;padding:12px 26px;border-radius:999px;cursor:pointer}
+.decline{background:var(--red);color:#fff;border:0;font-weight:800;font-size:15px;padding:12px 26px;border-radius:999px;cursor:pointer}
+.callpanel{flex:0 0 auto;display:flex;align-items:center;gap:12px;background:#1c1917;color:#fff;border-radius:18px;padding:14px 16px}
+.callavatar{width:48px;height:48px;flex:0 0 auto;border-radius:50%;background:var(--orange);display:grid;place-items:center;font-size:22px;animation:pl 1s infinite}
+.callinfo{flex:1;min-width:0}.callinfo b{font-size:15px}.callinfo p{margin:2px 0 0;font-size:12px;opacity:.7}
+.callpanel .decline{padding:10px 18px;font-size:13px;flex:0 0 auto}
 .card.center{text-align:center}
 .ring{font-size:40px;animation:pl 1s infinite}
 .card{background:#fff;padding:22px;border-radius:20px;max-width:400px;width:100%}

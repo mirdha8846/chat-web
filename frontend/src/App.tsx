@@ -26,6 +26,7 @@ export default function App(): JSX.Element {
   const seenIds = useRef<Set<string>>(new Set());
   const retryRef = useRef(0);
   const boxRef = useRef<HTMLDivElement>(null);
+  const callRef = useRef<CallState>('idle');
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localRef = useRef<MediaStream | null>(null);
   const remoteRef = useRef<MediaStream | null>(null);
@@ -46,6 +47,7 @@ export default function App(): JSX.Element {
     return () => clearInterval(t);
   }, [msgs.some((m) => m.seen)]);
   useEffect(() => { boxRef.current?.scrollTo({ top: 9e6, behavior: 'smooth' }); }, [msgs.length]);
+  useEffect(() => { callRef.current = call; }, [call]);
 
   useEffect(() => {
     if (call !== 'active') { setElapsed(0); return; }
@@ -176,7 +178,7 @@ export default function App(): JSX.Element {
       } else if (m.t === 'seen') {
         setMsgs((p) => p.map((x) => (x.id === m.id ? { ...x, seen: true } : x)));
       } else if (m.t === 'call_offer') {
-        if (call !== 'idle') { ws.send(JSON.stringify({ t: 'call_end' })); return; }
+        if (callRef.current !== 'idle') { ws.send(JSON.stringify({ t: 'call_end' })); return; }
         offerRef.current = { sdp: m.sdp as string, mode: (m.mode === 'voice' ? 'voice' : 'video') };
         setCallMode(offerRef.current.mode); setCall('incoming');
       } else if (m.t === 'call_answer') {
@@ -198,7 +200,7 @@ export default function App(): JSX.Element {
       const n = Math.min(1000 * 2 ** retryRef.current++, 15000);
       setTimeout(() => { if (wsRef.current === ws) connect(); }, n);
     };
-  }, [call, endCall]);
+  }, [endCall]);
 
   useEffect(() => { connect(); }, [connect]);
 
@@ -248,7 +250,11 @@ export default function App(): JSX.Element {
         </section>
       )}
       {call === 'outgoing' && (
-        <div className="banner"><span className="pulse" />Calling… waiting for peer to pick up.<button className="roundbtn end sm" onClick={() => endCall(true)}>✕</button></div>
+        <section className="callpanel">
+          <span className="callavatar">{callMode === 'video' ? '🎥' : '📞'}</span>
+          <div className="callinfo"><b>{callMode === 'video' ? 'Video' : 'Voice'} calling…</b><p>Ringing peer · encrypted signaling</p></div>
+          <button className="decline" onClick={() => endCall(true)}>✕ End</button>
+        </section>
       )}
 
       {status === 'waiting' && call === 'idle' && (
@@ -288,8 +294,8 @@ export default function App(): JSX.Element {
             <h3>Incoming {callMode} call</h3>
             <p>Your peer wants to start a {callMode} call. Media is peer-to-peer SRTP encrypted.</p>
             <div className="modalbtns">
-              <button className="send" onClick={() => void acceptCall()}>Accept</button>
-              <button className="roundbtn end" onClick={() => endCall(true)}>Decline</button>
+              <button className="accept" onClick={() => void acceptCall()}>✓ Accept</button>
+              <button className="decline" onClick={() => endCall(true)}>✕ Decline</button>
             </div>
           </div>
         </div>
